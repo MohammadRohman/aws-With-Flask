@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Input - Aesthetic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const nama = document.getElementById("nama").value;
+            const email = document.getElementById("email").value;
+            const messageDiv = document.getElementById("message");
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/submit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nama, email })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    messageDiv.innerHTML = `<p class="text-green-600 font-semibold">${result.message}</p>`;
+                    document.getElementById("form-input").reset();
+                } else {
+                    messageDiv.innerHTML = `<p class="text-red-600 font-semibold">${result.error}</p>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = `<p class="text-red-600 font-semibold">Terjadi kesalahan, coba lagi!</p>`;
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-2xl p-8 w-96">
+        <h2 class="text-2xl font-bold text-gray-700 text-center mb-4">Form Input Data</h2>
+        
+        <form id="form-input" onsubmit="submitForm(event)" class="space-y-4">
+            <div>
+                <label for="nama" class="block text-gray-600 font-medium">Nama:</label>
+                <input type="text" id="nama" name="nama" required 
+                    class="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+                <label for="email" class="block text-gray-600 font-medium">Email:</label>
+                <input type="email" id="email" name="email" required 
+                    class="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition">
+                Submit
+            </button>
+
+            <div id="message" class="text-center mt-2"></div>
+        </form>
+    </div>
+</body>
+</html>
